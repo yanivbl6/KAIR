@@ -1,5 +1,5 @@
 {
-  "task": "dncnn25_new"  //  root/task/images-models-options
+  "task": "dncnn25_new_l2"  //  root/task/images-models-options
   , "model": "plain" // "plain"
   , "gpu_ids": [0]
 
