@@ -7,10 +7,10 @@
   , "n_channels": 1  // broadcast to "datasets", 1 for grayscale, 3 for color
 
   , "merge_bn": true               // BN for DnCNN
-  , "merge_bn_startpoint": 400000  // merge BN after N iterations
+  , "merge_bn_startpoint": 40000  // merge BN after N iterations
 
   , "path": {
-    "root": "denoising"            // "denoising" | "superresolution"
+    "root": "/results"            // "denoising" | "superresolution"
     , "pretrained_netG": null      // path of pretrained model
   }
 
@@ -18,7 +18,7 @@
     "train": {
       "name": "train_dataset"           // just name
       , "dataset_type": "dncnn"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
-      , "dataroot_H": "trainsets/trainH"// path of H training dataset
+      , "dataroot_H": "/data/img"  // path of H training dataset
       , "dataroot_L": null              // path of L training dataset
       , "H_size": 40                    // patch size 40 | 64 | 96 | 128 | 192
 
@@ -32,7 +32,7 @@
     , "test": {
       "name": "test_dataset"            // just name
       , "dataset_type": "dncnn"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
-      , "dataroot_H": "testsets/bsd68"  // path of H testing dataset
+      , "dataroot_H": "/data/BSD68"  // path of H testing dataset
       , "dataroot_L": null              // path of L testing dataset
 
       , "sigma": 25                     // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
@@ -68,14 +68,14 @@
     , "G_optimizer_clipgrad": null      // unused
 
     , "G_scheduler_type": "MultiStepLR" // "MultiStepLR" is enough
-    , "G_scheduler_milestones": [200000, 400000, 600000, 800000, 1000000, 2000000]
+    , "G_scheduler_milestones": [20000, 40000, 60000, 80000, 100000, 200000]
     , "G_scheduler_gamma": 0.5
 
     , "G_regularizer_orthstep": null    // unused
     , "G_regularizer_clipstep": null    // unused
 
     , "checkpoint_test": 5000           // for testing
-    , "checkpoint_save": 5000           // for saving model
+    , "checkpoint_save": 10000           // for saving model
     , "checkpoint_print": 200           // for print
   }
 }
