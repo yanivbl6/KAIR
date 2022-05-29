@@ -21,9 +21,10 @@
       , "dataroot_H": "/data/img"// path of H training dataset
       , "dataroot_L": null              // path of L training dataset
       , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
-
-      , "sigma": 25                     // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
-      , "sigma_test": 25                // 15, 25, 50 for DnCNN and ffdnet
+      
+      , "sigma": 30                     // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
+      , "sigma_test": 30                // 15, 25, 50 for DnCNN and ffdnet
+      , "sigma_range": 25               
 
       , "dataloader_shuffle": true
       , "dataloader_num_workers": 8
