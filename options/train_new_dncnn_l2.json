@@ -10,7 +10,7 @@
   , "merge_bn_startpoint": 40000  // merge BN after N iterations
 
   , "path": {
-    "root": "./results"            // "denoising" | "superresolution"
+    "root": "/results"            // "denoising" | "superresolution"
     , "pretrained_netG": null      // path of pretrained model
   }
 
