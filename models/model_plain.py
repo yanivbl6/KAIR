@@ -13,6 +13,7 @@ from utils.utils_model import test_mode
 from utils.utils_regularizers import regularizer_orth, regularizer_clip
 
 
+
 class ModelPlain(ModelBase):
     """Train with pixel loss"""
     def __init__(self, opt):

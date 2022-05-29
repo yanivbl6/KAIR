@@ -31,7 +31,8 @@ def define_G(opt):
                    out_nc=opt_net['out_nc'],
                    nc=opt_net['nc'],
                    nb=opt_net['nb'],  # total number of conv layers
-                   act_mode=opt_net['act_mode'])
+                   act_mode=opt_net['act_mode'],
+                   use_normact = opt_net['use_normact'])
 
     # ----------------------------------------
     # Flexible DnCNN

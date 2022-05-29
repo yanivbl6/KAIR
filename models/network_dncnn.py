@@ -33,12 +33,27 @@ import models.basicblock as B
 # --------------------------------------------
 """
 
+def norm_act(output_net, new_norm):
+    output_net_shape = output_net.shape
+    output_net = output_net.view(output_net.size(0), -1)
+    frac = new_norm / (torch.norm(output_net, dim=1))
+    output_net = output_net * (1 - torch.nn.functional.relu(1 - frac)).unsqueeze(1)
+    return output_net.view(output_net_shape)
+
+
+class NormAct(nn.Module):
+    def __init__(self):
+        super(NormAct, self).__init__()  # init the base class
+
+    def forward(self, output_net, new_norm):
+        return norm_act(output_net, new_norm)
+
 
 # --------------------------------------------
 # DnCNN
 # --------------------------------------------
 class DnCNN(nn.Module):
-    def __init__(self, in_nc=1, out_nc=1, nc=64, nb=17, act_mode='BR'):
+    def __init__(self, in_nc=1, out_nc=1, nc=64, nb=17, act_mode='BR', use_normact = False):
         """
         # ------------------------------------
         in_nc: channel number of input
@@ -65,10 +80,16 @@ class DnCNN(nn.Module):
         m_tail = B.conv(nc, out_nc, mode='C', bias=bias)
 
         self.model = B.sequential(m_head, *m_body, m_tail)
+        self.normact = NormAct()
+        self.use_normact = use_normact
+
 
     def forward(self, x):
         n = self.model(x)
-        return x-n
+        if self.use_normact:
+            return self.normact(x-n)
+        else:
+            return x-n
 
 
 # --------------------------------------------

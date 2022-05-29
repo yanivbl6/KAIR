@@ -18,6 +18,13 @@ from data.select_dataset import define_Dataset
 from models.select_model import define_Model
 
 
+
+
+def norm_change(img, new_norm):
+    frac = new_norm / (torch.norm(img))
+    return img*frac
+
+
 '''
 # --------------------------------------------
 # training code for DnCNN
@@ -42,8 +49,16 @@ from models.select_model import define_Model
 # --------------------------------------------
 '''
 
-
 def main(json_path='options/train_dncnn.json'):
+
+
+    dataset = 'bsd'
+    gray_scale = False
+    new_norm = 45.167343  # mean of the norm of bsd images with patches of 80*80
+    input_channels = 3
+    lambd = lambda x: norm_change(x, new_norm)
+
+
 
     '''
     # ----------------------------------------
@@ -57,6 +72,13 @@ def main(json_path='options/train_dncnn.json'):
     opt = option.parse(parser.parse_args().opt, is_train=True)
     util.mkdirs((path for key, path in opt['path'].items() if 'pretrained' not in key))
 
+    use_baseline = opt['train']['baseline']
+    if use_baseline:
+        transform_fn = None
+    else:
+        transform_fn = transforms.Compose([transforms.Lambda(lambd)])
+
+    
     # ----------------------------------------
     # update opt
     # ----------------------------------------
@@ -119,12 +141,12 @@ def main(json_path='options/train_dncnn.json'):
                                       shuffle=dataset_opt['dataloader_shuffle'],
                                       num_workers=dataset_opt['dataloader_num_workers'],
                                       drop_last=True,
-                                      pin_memory=True)
+                                      pin_memory=True, transform = transform_fn)
         elif phase == 'test':
             test_set = define_Dataset(dataset_opt)
             test_loader = DataLoader(test_set, batch_size=1,
                                      shuffle=False, num_workers=1,
-                                     drop_last=False, pin_memory=True)
+                                     drop_last=False, pin_memory=True, transform = transform_fn)
         else:
             raise NotImplementedError("Phase [%s] is not recognized." % phase)
 
