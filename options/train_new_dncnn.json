@@ -18,7 +18,7 @@
     "train": {
       "name": "train_dataset"           // just name
       , "dataset_type": "dncnn"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
-      , "dataroot_H": "/data/img  "// path of H training dataset
+      , "dataroot_H": "/data/img"// path of H training dataset
       , "dataroot_L": null              // path of L training dataset
       , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
 
@@ -60,7 +60,7 @@
     , "init_type": "orthogonal"         // "orthogonal" | "normal" | "uniform" | "xavier_normal" | "xavier_uniform" | "kaiming_normal" | "kaiming_uniform"
     , "init_bn_type": "uniform"         // "uniform" | "constant"
     , "init_gain": 0.2
-    , "use_normact": true
+    , "normact": 45.167343
   }
 
   , "train": {

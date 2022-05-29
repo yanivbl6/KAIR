@@ -46,14 +46,17 @@ class NormAct(nn.Module):
         super(NormAct, self).__init__()  # init the base class
 
     def forward(self, output_net, new_norm):
-        return norm_act(output_net, new_norm)
+        if new_norm is None:
+            return output_net
+        else:
+            return norm_act(output_net, new_norm)
 
 
 # --------------------------------------------
 # DnCNN
 # --------------------------------------------
 class DnCNN(nn.Module):
-    def __init__(self, in_nc=1, out_nc=1, nc=64, nb=17, act_mode='BR', use_normact = False):
+    def __init__(self, in_nc=1, out_nc=1, nc=64, nb=17, act_mode='BR', normact = None):
         """
         # ------------------------------------
         in_nc: channel number of input
@@ -81,15 +84,12 @@ class DnCNN(nn.Module):
 
         self.model = B.sequential(m_head, *m_body, m_tail)
         self.normact = NormAct()
-        self.use_normact = use_normact
+        self.new_norm = normact
 
 
     def forward(self, x):
         n = self.model(x)
-        if self.use_normact:
-            return self.normact(x-n)
-        else:
-            return x-n
+        return self.normact(x-n,  self.new_norm)
 
 
 # --------------------------------------------
