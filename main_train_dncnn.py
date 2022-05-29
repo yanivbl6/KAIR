@@ -58,8 +58,6 @@ def main(json_path='options/train_dncnn.json'):
     input_channels = 3
     lambd = lambda x: norm_change(x, new_norm)
 
-
-
     '''
     # ----------------------------------------
     # Step--1 (prepare opt)
@@ -72,13 +70,6 @@ def main(json_path='options/train_dncnn.json'):
     opt = option.parse(parser.parse_args().opt, is_train=True)
     util.mkdirs((path for key, path in opt['path'].items() if 'pretrained' not in key))
 
-    use_baseline = opt['train']['baseline']
-    if use_baseline:
-        transform_fn = None
-    else:
-        transform_fn = transforms.Compose([transforms.Lambda(lambd)])
-
-    
     # ----------------------------------------
     # update opt
     # ----------------------------------------
@@ -141,12 +132,12 @@ def main(json_path='options/train_dncnn.json'):
                                       shuffle=dataset_opt['dataloader_shuffle'],
                                       num_workers=dataset_opt['dataloader_num_workers'],
                                       drop_last=True,
-                                      pin_memory=True, transform = transform_fn)
+                                      pin_memory=True)
         elif phase == 'test':
             test_set = define_Dataset(dataset_opt)
             test_loader = DataLoader(test_set, batch_size=1,
                                      shuffle=False, num_workers=1,
-                                     drop_last=False, pin_memory=True, transform = transform_fn)
+                                     drop_last=False, pin_memory=True)
         else:
             raise NotImplementedError("Phase [%s] is not recognized." % phase)
 

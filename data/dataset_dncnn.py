@@ -6,6 +6,11 @@ import torch.utils.data as data
 import utils.utils_image as util
 
 
+
+def norm_change(img, new_norm):
+    frac = new_norm / (torch.norm(img))
+    return img*frac
+
 class DatasetDnCNN(data.Dataset):
     """
     # -----------------------------------------
@@ -27,6 +32,7 @@ class DatasetDnCNN(data.Dataset):
 
         self.sigma_range = opt['sigma_range'] if opt['sigma_range'] else 0
         self.baseline = opt['baseline'] if opt['baseline'] else True
+        self.new_norm = opt['new_norm'] if opt['new_norm'] else 45.167343
 
         # ------------------------------------
         # get path of H
@@ -75,6 +81,8 @@ class DatasetDnCNN(data.Dataset):
             # add noise
             # --------------------------------
 
+            if not self.baseline:
+                img_L = norm_change(img_L, self.new_norm)
 
             if self.sigma_range > 0:
                 sigma = (torch.rand([1])*2-1) * self.sigma_range + self.sigma 
@@ -87,6 +95,9 @@ class DatasetDnCNN(data.Dataset):
 
             if not self.baseline:
                 img_L.mul_(1.0/(sigma/255.0)**2)
+
+            
+
         else:
 
 
@@ -106,6 +117,9 @@ class DatasetDnCNN(data.Dataset):
             """
             img_H = util.uint2single(patch_H)
             img_L = np.copy(img_H)
+
+            if not self.baseline:
+                img_L = norm_change(img_L, self.new_norm)
 
             # --------------------------------
             # add noise

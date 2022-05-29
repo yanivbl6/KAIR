@@ -80,6 +80,5 @@
     , "checkpoint_test": 5000           // for testing
     , "checkpoint_save": 10000           // for saving model
     , "checkpoint_print": 200           // for print
-    , "baseline": true
   }
 }

@@ -39,6 +39,7 @@
       , "sigma_test": 20                // 15, 25, 50 for DnCNN and ffdnet
       , "sigma_range": 25                     // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
       , "baseline": false
+      , "new_norm": 45.167343
 
     }
   }
@@ -80,6 +81,5 @@
     , "checkpoint_test": 5000           // for testing
     , "checkpoint_save": 10000           // for saving model
     , "checkpoint_print": 200           // for print
-    , "baseline": false
   }
 }
