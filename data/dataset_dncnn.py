@@ -5,7 +5,6 @@ import torch
 import torch.utils.data as data
 import utils.utils_image as util
 
-``
 
 def norm_change(img, new_norm):
     frac = new_norm / (torch.norm(img))
