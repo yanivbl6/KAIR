@@ -5,7 +5,7 @@ import torch
 import torch.utils.data as data
 import utils.utils_image as util
 
-
+``
 
 def norm_change(img, new_norm):
     frac = new_norm / (torch.norm(img))
@@ -134,7 +134,7 @@ class DatasetDnCNN(data.Dataset):
             img_L = util.single2tensor3(img_L)
             img_H = util.single2tensor3(img_H)
 
-        return {'L': img_L, 'H': img_H, 'H_path': H_path, 'L_path': L_path, 'sigma': sigma}
+        return {'L': img_L, 'H': img_H, 'H_path': H_path, 'L_path': L_path, 'sigma': self.sigma}
 
     def __len__(self):
         return len(self.paths_H)
