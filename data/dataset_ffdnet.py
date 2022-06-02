@@ -4,6 +4,9 @@ import torch
 import torch.utils.data as data
 import utils.utils_image as util
 
+def norm_change(img, new_norm):
+    frac = new_norm / (torch.norm(img))
+    return img*frac
 
 class DatasetFFDNet(data.Dataset):
     """
@@ -28,6 +31,13 @@ class DatasetFFDNet(data.Dataset):
         # get the path of H, return None if input is None
         # -------------------------------------
         self.paths_H = util.get_image_paths(opt['dataroot_H'])
+
+        self.new_norm = opt['new_norm'] if opt['new_norm'] else 45.167343
+        self.baseline = opt['baseline'] if opt['baseline'] else True
+
+
+    def set_test_sigma(self, sigma):
+        self.sigma_test = sigma
 
     def __getitem__(self, index):
         # -------------------------------------
@@ -65,6 +75,9 @@ class DatasetFFDNet(data.Dataset):
             img_H = util.uint2tensor3(patch_H)
             img_L = img_H.clone()
 
+            if not self.baseline:
+                img_L = norm_change(img_L, self.new_norm)
+
             # ---------------------------------
             # get noise level
             # ---------------------------------
@@ -76,6 +89,9 @@ class DatasetFFDNet(data.Dataset):
             # ---------------------------------
             noise = torch.randn(img_L.size()).mul_(noise_level).float()
             img_L.add_(noise)
+
+            if not self.baseline:
+                img_L.mul_(1.0/(sigma/255.0)**2)
 
         else:
             """

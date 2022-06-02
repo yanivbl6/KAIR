@@ -22,9 +22,10 @@
       , "dataroot_L": null              // path of L training dataset
       , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
 
-      , "sigma": 30                     // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
-      , "sigma_test": 30                // 15, 25, 50 for DnCNN and ffdnet
-      , "sigma_range": 25                     // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
+      , "sigma": [10, 50]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
+      , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
+      , "baseline": false
+      , "new_norm": 45.167343
 
       , "dataloader_shuffle": true
       , "dataloader_num_workers": 8
@@ -35,11 +36,12 @@
       , "dataset_type": "dncnn"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
       , "dataroot_H": "/data/BSD68"  // path of H testing dataset
       , "dataroot_L": null              // path of L testing dataset
+      
+      , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
 
-      , "sigma": 30                     // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
-      , "sigma_test": 30                // 15, 25, 50 for DnCNN and ffdnet
-      , "sigma_range": 25                     // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
-      , "baseline": true
+      , "sigma": [10, 50]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
+      , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
+      , "baseline": false
       , "new_norm": 45.167343
     }
   }
@@ -64,7 +66,7 @@
   }
 
   , "train": {
-    "G_lossfn_type": "l1"               // "l1" preferred | "l2sum" | "l2" | "ssim" 
+    "G_lossfn_type": "l2"               // "l1" preferred | "l2sum" | "l2" | "ssim" 
     , "G_lossfn_weight": 1.0            // default
 
     , "G_optimizer_type": "adam"        // fixed, adam is enough
