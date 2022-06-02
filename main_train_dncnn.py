@@ -218,7 +218,7 @@ def main(json_path='options/train_dncnn.json'):
 
                 for tsigma in opt['tsigma']:
                 
-                    test_loader.set_test_sigma(tsigma)
+                    test_loader.dataset.set_test_sigma(tsigma)
                     avg_psnr = 0.0
                     idx = 0
 

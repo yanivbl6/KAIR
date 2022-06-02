@@ -15,7 +15,6 @@
     , "pretrained_netG": null      // path of pretrained model
   }
 
-
   , "datasets": {
     "train": {
       "name": "train_dataset"           // just name
