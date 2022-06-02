@@ -17,7 +17,7 @@
   , "datasets": {
     "train": {
       "name": "train_dataset"           // just name
-      , "dataset_type": "dncnn"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
+      , "dataset_type": "denoising-noiselevel"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
       , "dataroot_H": "/data/img"  // path of H training dataset
       , "dataroot_L": null              // path of L training dataset
       , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
@@ -33,10 +33,10 @@
     }
     , "test": {
       "name": "test_dataset"            // just name
-      , "dataset_type": "dncnn"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
+      , "dataset_type": "denoising-noiselevel"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
       , "dataroot_H": "/data/BSD68"  // path of H testing dataset
       , "dataroot_L": null              // path of L testing dataset
-      
+
       , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
 
       , "sigma": [10, 50]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN

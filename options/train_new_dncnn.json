@@ -8,11 +8,13 @@
 
   , "merge_bn": true               // BN for DnCNN
   , "merge_bn_startpoint": 40000  // merge BN after N iterations
+  , "tsigma": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
 
   , "path": {
     "root": "/results"            // "denoising" | "superresolution"
     , "pretrained_netG": null      // path of pretrained model
   }
+
 
   , "datasets": {
     "train": {
@@ -83,7 +85,7 @@
     , "G_regularizer_clipstep": null    // unused
 
     , "checkpoint_test": 5000           // for testing
-    , "checkpoint_save": 10000           // for saving model
+    , "checkpoint_save": 100000           // for saving model
     , "checkpoint_print": 200           // for print
   }
 }

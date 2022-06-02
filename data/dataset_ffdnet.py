@@ -99,7 +99,17 @@ class DatasetFFDNet(data.Dataset):
             # get L/H/sigma image pairs
             # --------------------------------
             """
-            img_H = util.uint2single(img_H)
+
+            H, W, _ = img_H.shape
+
+            # --------------------------------
+            # randomly crop the patch
+            # --------------------------------
+            rnd_h = (H - self.patch_size)//2
+            rnd_w = (W - self.patch_size)//2
+            patch_H = img_H[rnd_h:rnd_h + self.patch_size, rnd_w:rnd_w + self.patch_size, :]
+
+            img_H = util.uint2single(patch_H)
             img_L = np.copy(img_H)
             np.random.seed(seed=0)
             img_L += np.random.normal(0, self.sigma_test/255.0, img_L.shape)
