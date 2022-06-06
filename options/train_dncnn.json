@@ -25,8 +25,8 @@
 
       , "sigma": [10, 50]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
       , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
-      , "baseline": false
-      , "new_norm": 45.167343
+      , "baseline": true   //IMPORTANT
+      , "new_norm": 45.167343   //IMPORTANT
 
       , "dataloader_shuffle": true
       , "dataloader_num_workers": 8
@@ -40,10 +40,10 @@
 
       , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
 
-      , "sigma": [10, 50]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
-      , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
-      , "baseline": false
-      , "new_norm": 45.167343
+      , "sigma": [10, 50]      //IMPORTANT
+      , "sigma_test": 30 //IMPORTANT
+      , "baseline": true  //IMPORTANT
+      , "new_norm": 45.167343 //IMPORTANT
     }
   }
 

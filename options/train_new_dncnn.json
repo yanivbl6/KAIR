@@ -23,10 +23,10 @@
       , "dataroot_L": null              // path of L training dataset
       , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
                 
-      , "sigma": [10, 50]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
-      , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
-      , "baseline": true
-      , "new_norm": 45.167343
+      , "sigma": [10, 50]   //IMPORTANT
+      , "sigma_test": 30 //IMPORTANT
+      , "baseline": false     //IMPORTANT
+      , "new_norm": 45.167343   //IMPORTANT
 
       , "dataloader_shuffle": true
       , "dataloader_num_workers": 8
@@ -41,10 +41,10 @@
       , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
 
 
-      , "sigma": [10, 50]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
-      , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
-      , "baseline": true
-      , "new_norm": 45.167343
+      , "sigma": [10, 50]      //IMPORTANT
+      , "sigma_test": 30 //IMPORTANT
+      , "baseline": false   //IMPORTANT
+      , "new_norm": 45.167343    //IMPORTANT
 
     }
   }
@@ -65,7 +65,7 @@
     , "init_type": "orthogonal"         // "orthogonal" | "normal" | "uniform" | "xavier_normal" | "xavier_uniform" | "kaiming_normal" | "kaiming_uniform"
     , "init_bn_type": "uniform"         // "uniform" | "constant"
     , "init_gain": 0.2
-    , "normact": 45.167343
+    , "normact": 45.167343   //IMPORTANT
   }
 
   , "train": {
