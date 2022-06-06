@@ -126,7 +126,9 @@ class DatasetDnCNN(data.Dataset):
             np.random.seed(seed=0)
 
             img_L += np.random.normal(0, self.sigma_test/255.0, img_L.shape)
-
+            
+            if not self.baseline:
+                img_L.mul_(1.0/(sigma/255.0)**2)
             # --------------------------------
             # HWC to CHW, numpy to tensor
             # --------------------------------
