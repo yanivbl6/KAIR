@@ -8,6 +8,13 @@ def norm_change(img, new_norm):
     frac = new_norm / (torch.norm(img))
     return img*frac
 
+def calc_norm(data, gray_scale=False):
+    if gray_scale:
+        data_norm = data.norm(dim=(2, 3)).squeeze(1)
+    else:
+        data_norm = torch.norm(data.norm(dim=(2, 3)), dim=1)
+    return data_norm
+
 class DatasetFFDNet(data.Dataset):
     """
     # -----------------------------------------
@@ -114,6 +121,12 @@ class DatasetFFDNet(data.Dataset):
             np.random.seed(seed=0)
             img_L += np.random.normal(0, self.sigma_test/255.0, img_L.shape)
             noise_level = torch.FloatTensor([self.sigma_test/255.0])
+            
+            if not self.baseline:
+                gray_scale = self.n_channels == 1
+                d = self.patch_size**2 * self.n_channels
+                norm_frac = (torch.sqrt(calc_norm(img_L, gray_scale)**2 - d * (noise_level**2))/self.new_norm)
+                img_L.mul_(norm_frac/(noise_level**2))
 
             # ---------------------------------
             # L/H image pairs
