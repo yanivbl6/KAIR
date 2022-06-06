@@ -99,15 +99,15 @@ class DnCNN(nn.Module):
 
     def forward(self, x):
         n = self.model(x)
-        if self.train
+        if self.training:
             return self.normact(x-n,  self.new_norm)
         else:
-            if new_norm is None:
+            if self.new_norm is None:
                 return self.normact(x-n,  self.new_norm)
             else:
                 gray_scale = self.in_nc == 1
                 d = x.shape[2] * x.shape[3] * self.in_nc
-                norm_frac = (torch.sqrt(calc_norm(x, gray_scale)**2 - d * (noise_level**2))/self.new_norm)
+                norm_frac = (torch.sqrt(calc_norm(x, gray_scale)**2 - d * ((self.sigma/255.0)**2))/self.new_norm)
                 return norm_frac*self.normact(x-n,  self.new_norm)
 
 # --------------------------------------------

@@ -231,6 +231,7 @@ def main(json_path='options/train_dncnn.json'):
                         util.mkdir(img_dir)
 
                         model.feed_data(test_data)
+                        model.netG.module.feed_sigma(tsigma)
                         model.test()
 
                         visuals = model.current_visuals()
