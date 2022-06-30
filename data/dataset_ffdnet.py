@@ -54,6 +54,7 @@ class DatasetFFDNet(data.Dataset):
         img_H = util.imread_uint(H_path, self.n_channels)
 
         L_path = H_path
+        gray_scale = self.n_channels == 1
 
         if self.opt['phase'] == 'train':
             """
@@ -126,7 +127,6 @@ class DatasetFFDNet(data.Dataset):
             noise_level = torch.FloatTensor([self.sigma_test/255.0])
             
             if not self.baseline:
-                gray_scale = self.n_channels == 1
                 d = self.patch_size**2 * self.n_channels
                 norm_frac = (torch.sqrt(ynorm**2 - d * (noise_level**2))/self.new_norm)
                 ##norm_frac = self.new_norm / torch.sqrt(calc_norm(img_L, gray_scale)**2 - d * (noise_level**2))
