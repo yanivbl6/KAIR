@@ -110,7 +110,7 @@ class DnCNN(nn.Module):
             else:
                 gray_scale = self.in_nc == 1
                 d = x.shape[2] * x.shape[3] * self.in_nc
-                norm_frac = (torch.sqrt(self.tnorm**2 - d * ((self.sigma/255.0)**2))/self.new_norm)
+                norm_frac = (torch.sqrt(self.ynorm**2 - d * ((self.sigma/255.0)**2))/self.new_norm)
                 return norm_frac*self.normact(x-n,  self.new_norm)
 
 # --------------------------------------------
