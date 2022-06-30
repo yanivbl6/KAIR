@@ -98,7 +98,7 @@ class DnCNN(nn.Module):
         self.sigma = sigma
 
     def feed_ynorm(self,ynorm):
-        self.ynorm = ynorm
+        self.ynorm = ynorm.to(self.device)
 
     def forward(self, x):
         n = self.model(x)
