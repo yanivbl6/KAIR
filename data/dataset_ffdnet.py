@@ -120,12 +120,17 @@ class DatasetFFDNet(data.Dataset):
             img_L = np.copy(img_H)
             np.random.seed(seed=0)
             img_L += np.random.normal(0, self.sigma_test/255.0, img_L.shape)
+
+            ynorm = calc_norm(img_L, gray_scale)
+
             noise_level = torch.FloatTensor([self.sigma_test/255.0])
             
             if not self.baseline:
                 gray_scale = self.n_channels == 1
                 d = self.patch_size**2 * self.n_channels
-                norm_frac = (torch.sqrt(calc_norm(img_L, gray_scale)**2 - d * (noise_level**2))/self.new_norm)
+                norm_frac = (torch.sqrt(ynorm**2 - d * (noise_level**2))/self.new_norm)
+                ##norm_frac = self.new_norm / torch.sqrt(calc_norm(img_L, gray_scale)**2 - d * (noise_level**2))
+
                 img_L.mul_(norm_frac/(noise_level**2))
 
             # ---------------------------------
@@ -136,7 +141,7 @@ class DatasetFFDNet(data.Dataset):
         noise_level = noise_level.unsqueeze(1).unsqueeze(1)
 
 
-        return {'L': img_L, 'H': img_H, 'C': noise_level, 'L_path': L_path, 'H_path': H_path}
+        return {'L': img_L, 'H': img_H, 'C': noise_level, 'L_path': L_path, 'H_path': H_path, 'ynorm': ynorm}
 
     def __len__(self):
         return len(self.paths_H)
