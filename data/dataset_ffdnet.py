@@ -122,7 +122,7 @@ class DatasetFFDNet(data.Dataset):
             np.random.seed(seed=0)
             img_L += np.random.normal(0, self.sigma_test/255.0, img_L.shape)
 
-            ynorm = calc_norm(util.single2tensor3(img_L), gray_scale)
+            ynorm = util.single2tensor3(img_L).norm(dim=(1,2)).norm()
 
             noise_level = torch.FloatTensor([self.sigma_test/255.0])
             
