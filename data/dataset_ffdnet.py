@@ -4,6 +4,16 @@ import torch
 import torch.utils.data as data
 import utils.utils_image as util
 
+def norm_change(img, new_norm):
+    frac = new_norm / (torch.norm(img))
+    return img*frac
+
+def calc_norm(data, gray_scale=False):
+    if gray_scale:
+        data_norm = data.norm(dim=(2, 3)).squeeze(1)
+    else:
+        data_norm = torch.norm(data.norm(dim=(2, 3)), dim=1)
+    return data_norm
 
 class DatasetFFDNet(data.Dataset):
     """
@@ -28,6 +38,13 @@ class DatasetFFDNet(data.Dataset):
         # get the path of H, return None if input is None
         # -------------------------------------
         self.paths_H = util.get_image_paths(opt['dataroot_H'])
+
+        self.new_norm = opt['new_norm'] if opt['new_norm'] else 45.167343
+        self.baseline = opt['baseline'] if opt['baseline'] else True
+
+
+    def set_test_sigma(self, sigma):
+        self.sigma_test = sigma
 
     def __getitem__(self, index):
         # -------------------------------------
@@ -65,6 +82,9 @@ class DatasetFFDNet(data.Dataset):
             img_H = util.uint2tensor3(patch_H)
             img_L = img_H.clone()
 
+            if not self.baseline:
+                img_L = norm_change(img_L, self.new_norm)
+
             # ---------------------------------
             # get noise level
             # ---------------------------------
@@ -77,17 +97,36 @@ class DatasetFFDNet(data.Dataset):
             noise = torch.randn(img_L.size()).mul_(noise_level).float()
             img_L.add_(noise)
 
+            if not self.baseline:
+                img_L.mul_(1.0/(sigma/255.0)**2)
+
         else:
             """
             # --------------------------------
             # get L/H/sigma image pairs
             # --------------------------------
             """
-            img_H = util.uint2single(img_H)
+
+            H, W, _ = img_H.shape
+
+            # --------------------------------
+            # randomly crop the patch
+            # --------------------------------
+            rnd_h = (H - self.patch_size)//2
+            rnd_w = (W - self.patch_size)//2
+            patch_H = img_H[rnd_h:rnd_h + self.patch_size, rnd_w:rnd_w + self.patch_size, :]
+
+            img_H = util.uint2single(patch_H)
             img_L = np.copy(img_H)
             np.random.seed(seed=0)
             img_L += np.random.normal(0, self.sigma_test/255.0, img_L.shape)
             noise_level = torch.FloatTensor([self.sigma_test/255.0])
+            
+            if not self.baseline:
+                gray_scale = self.n_channels == 1
+                d = self.patch_size**2 * self.n_channels
+                norm_frac = (torch.sqrt(calc_norm(img_L, gray_scale)**2 - d * (noise_level**2))/self.new_norm)
+                img_L.mul_(norm_frac/(noise_level**2))
 
             # ---------------------------------
             # L/H image pairs

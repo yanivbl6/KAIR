@@ -40,6 +40,12 @@ def norm_act(output_net, new_norm):
     output_net = output_net * (1 - torch.nn.functional.relu(1 - frac)).unsqueeze(1)
     return output_net.view(output_net_shape)
 
+def calc_norm(data, gray_scale=False):
+    if gray_scale:
+        data_norm = data.norm(dim=(2, 3), keepdim = True)
+    else:
+        data_norm = torch.norm(data.norm(dim=(2, 3), keepdim = True), dim=1, keepdim = True)
+    return data_norm
 
 class NormAct(nn.Module):
     def __init__(self):
@@ -85,12 +91,24 @@ class DnCNN(nn.Module):
         self.model = B.sequential(m_head, *m_body, m_tail)
         self.normact = NormAct()
         self.new_norm = normact
-
+        self.sigma = None
+        self.in_nc = in_nc
+    
+    def feed_sigma(self, sigma):
+        self.sigma = sigma
 
     def forward(self, x):
         n = self.model(x)
-        return self.normact(x-n,  self.new_norm)
-
+        if self.training:
+            return self.normact(x-n,  self.new_norm)
+        else:
+            if self.new_norm is None:
+                return self.normact(x-n,  self.new_norm)
+            else:
+                gray_scale = self.in_nc == 1
+                d = x.shape[2] * x.shape[3] * self.in_nc
+                norm_frac = (torch.sqrt(calc_norm(x, gray_scale)**2 - d * ((self.sigma/255.0)**2))/self.new_norm)
+                return norm_frac*self.normact(x-n,  self.new_norm)
 
 # --------------------------------------------
 # IRCNN denoiser
