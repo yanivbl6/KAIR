@@ -8,6 +8,7 @@ from collections import OrderedDict
 import logging
 import torch
 from torch.utils.data import DataLoader
+import wandb
 
 
 from utils import utils_logger
@@ -149,6 +150,11 @@ def main(json_path='options/train_dncnn.json'):
 
     model = define_Model(opt)
 
+
+    wandb.init(project="dncnn", entity="dl-projects" )
+    wandb.config.update(opt)
+
+
     if opt['merge_bn'] and current_step > opt['merge_bn_startpoint']:
         logger.info('^_^ -----merging bnorm----- ^_^')
         model.merge_bnorm_test()
@@ -198,10 +204,17 @@ def main(json_path='options/train_dncnn.json'):
             # -------------------------------
             if current_step % opt['train']['checkpoint_print'] == 0:
                 logs = model.current_log()  # such as loss
+
+                log_data = {"Epoch": epoch,
+                            "Learning Rate": model.current_learning_rate()}
+                
                 message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step, model.current_learning_rate())
                 for k, v in logs.items():  # merge log information into message
                     message += '{:s}: {:.3e} '.format(k, v)
+                    log_data[k] = view
                 logger.info(message)
+
+                wandb.log(log_data)
 
             # -------------------------------
             # 5) save model
@@ -215,6 +228,8 @@ def main(json_path='options/train_dncnn.json'):
             # -------------------------------
             if current_step % opt['train']['checkpoint_test'] == 0:
 
+
+                test_results = {}
                 for tsigma in opt['tsigma']:
                 
                     test_loader.dataset.set_test_sigma(tsigma)
@@ -252,11 +267,12 @@ def main(json_path='options/train_dncnn.json'):
                         ##logger.info('{:->4d}--> {:>10s} | {:<4.2f}dB'.format(idx, image_name_ext, current_psnr))
 
                         avg_psnr += current_psnr
-
                     avg_psnr = avg_psnr / idx
 
                     # testing log
                     logger.info('<epoch:{:3d}, iter:{:8,d}, sigma:{:3d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step , tsigma , avg_psnr))
+                    test_results['psnr_%.02f' % tsigma] = avg_psnr
+                wandb.log(test_results)
 
     logger.info('Saving the final model.')
     model.save('latest')
