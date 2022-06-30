@@ -211,7 +211,7 @@ def main(json_path='options/train_dncnn.json'):
                 message = '<epoch:{:3d}, iter:{:8,d}, lr:{:.3e}> '.format(epoch, current_step, model.current_learning_rate())
                 for k, v in logs.items():  # merge log information into message
                     message += '{:s}: {:.3e} '.format(k, v)
-                    log_data[k] = view
+                    log_data[k] = v
                 logger.info(message)
 
                 wandb.log(log_data)
