@@ -180,7 +180,6 @@ def main(json_path='options/train_dncnn.json'):
             # 2) feed patch pairs
             # -------------------------------
             model.feed_data(train_data)
-            model.netG.module.feed_ynorm(train_data['ynorm'])
             # -------------------------------
             # 3) optimize parameters
             # -------------------------------
@@ -232,6 +231,7 @@ def main(json_path='options/train_dncnn.json'):
 
                         model.feed_data(test_data)
                         model.netG.module.feed_sigma(tsigma)
+                        model.netG.module.feed_ynorm(train_data['ynorm'])
                         model.test()
 
                         visuals = model.current_visuals()
