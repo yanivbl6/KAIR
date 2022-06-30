@@ -97,7 +97,7 @@ class DatasetFFDNet(data.Dataset):
             # ---------------------------------
             noise = torch.randn(img_L.size()).mul_(noise_level).float()
             img_L.add_(noise)
-            ynorm = calc_norm(img_L, gray_scale)
+            ynorm =  torch.norm(img_L)
             if not self.baseline:
                 img_L.mul_(1.0/(sigma/255.0)**2)
 
