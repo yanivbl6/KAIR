@@ -98,6 +98,7 @@ class DatasetFFDNet(data.Dataset):
             noise = torch.randn(img_L.size()).mul_(noise_level).float()
             img_L.add_(noise)
             ynorm =  torch.norm(img_L)
+            xnorm = None
             if not self.baseline:
                 img_L.mul_(1.0/(sigma/255.0)**2)
 
@@ -123,7 +124,7 @@ class DatasetFFDNet(data.Dataset):
             img_L += np.random.normal(0, self.sigma_test/255.0, img_L.shape)
 
             ynorm = np.sqrt(np.sum(img_L**2))
-
+            xnorm = np.sqrt(np.sum(img_H**2)
             noise_level = torch.FloatTensor([self.sigma_test/255.0])
             
             if not self.baseline:
@@ -141,7 +142,7 @@ class DatasetFFDNet(data.Dataset):
         noise_level = noise_level.unsqueeze(1).unsqueeze(1)
 
 
-        return {'L': img_L, 'H': img_H, 'C': noise_level, 'L_path': L_path, 'H_path': H_path, 'ynorm': ynorm}
+        return {'L': img_L, 'H': img_H, 'C': noise_level, 'L_path': L_path, 'H_path': H_path, 'ynorm': ynorm, 'xnorm': xnorm}
 
     def __len__(self):
         return len(self.paths_H)

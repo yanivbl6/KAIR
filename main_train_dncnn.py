@@ -247,6 +247,8 @@ def main(json_path='options/train_dncnn.json'):
                         model.feed_data(test_data)
                         model.netG.module.feed_sigma(tsigma)
                         model.netG.module.feed_ynorm(test_data['ynorm'])
+                        model.netG.module.feed_xnorm(test_data['xnorm'])
+
                         model.test()
 
                         visuals = model.current_visuals()
