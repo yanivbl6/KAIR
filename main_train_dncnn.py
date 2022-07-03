@@ -229,8 +229,13 @@ def main(json_path='options/train_dncnn.json'):
             if current_step % opt['train']['checkpoint_test'] == 0:
 
 
+
+                data= np.zeros([len(opt['tsigma']), len(test_loader)])
+
                 test_results = {}
-                for tsigma in opt['tsigma']:
+                my_table = wandb.Table(columns=["noise", "img_idx" , "image" ,"psnr"])
+
+                for sigma_i,tsigma in enumerate(opt['tsigma']):
                 
                     test_loader.dataset.set_test_sigma(tsigma)
                     avg_psnr = 0.0
@@ -258,13 +263,16 @@ def main(json_path='options/train_dncnn.json'):
                         # -----------------------
                         # save estimated image E
                         # -----------------------
-                        save_img_path = os.path.join(img_dir, '{:s}_{:d}_{:d}.png'.format(img_name, tsigma ,current_step))
-                        util.imsave(E_img, save_img_path)
+                        # save_img_path = os.path.join(img_dir, '{:s}_{:d}_{:d}.png'.format(img_name, tsigma ,current_step))
+                        # util.imsave(E_img, save_img_path)
+
 
                         # -----------------------
                         # calculate PSNR
                         # -----------------------
                         current_psnr = util.calculate_psnr(E_img, H_img, border=border)
+
+                        test_table.add_data(tsigma,idx, wandb.Image(E_img, caption=img_name), current_psnr)
 
                         ##logger.info('{:->4d}--> {:>10s} | {:<4.2f}dB'.format(idx, image_name_ext, current_psnr))
 
@@ -275,6 +283,9 @@ def main(json_path='options/train_dncnn.json'):
                     logger.info('<epoch:{:3d}, iter:{:8,d}, sigma:{:3d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step , tsigma , avg_psnr))
                     test_results['psnr_%.02f' % tsigma] = avg_psnr
                 wandb.log(test_results)
+
+                
+                wandb.log({"denoised images": my_table})
 
     logger.info('Saving the final model.')
     model.save('latest')
