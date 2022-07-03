@@ -153,7 +153,7 @@ def main(json_path='options/train_dncnn.json'):
 
     wandb.init(project="dncnn", entity="dl-projects" )
     wandb.config.update(opt)
-
+    wandb.Table.MAX_ROWS = len(test_loader) * len(opt['tsigma'])
 
     if opt['merge_bn'] and current_step > opt['merge_bn_startpoint']:
         logger.info('^_^ -----merging bnorm----- ^_^')
@@ -168,6 +168,10 @@ def main(json_path='options/train_dncnn.json'):
     # Step--4 (main training)
     # ----------------------------------------
     '''
+
+    ##table_art = wandb.Artifact("table_artifact_" + str(wandb.run.id), type="predictions")
+
+
 
     for epoch in range(1000000):  # keep running
         for i, train_data in enumerate(train_loader):
@@ -214,7 +218,7 @@ def main(json_path='options/train_dncnn.json'):
                     log_data[k] = v
                 logger.info(message)
 
-                wandb.log(log_data)
+                wandb.log(log_data, step = current_step)
 
             # -------------------------------
             # 5) save model
@@ -228,9 +232,6 @@ def main(json_path='options/train_dncnn.json'):
             # -------------------------------
             if current_step % opt['train']['checkpoint_test'] == 0:
 
-
-
-                data= np.zeros([len(opt['tsigma']), len(test_loader)])
 
                 test_results = {}
                 my_table = wandb.Table(columns=["noise", "img_idx" , "image" ,"psnr"])
@@ -282,8 +283,9 @@ def main(json_path='options/train_dncnn.json'):
                     # testing log
                     logger.info('<epoch:{:3d}, iter:{:8,d}, sigma:{:3d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step , tsigma , avg_psnr))
                     test_results['psnr_%.02f' % tsigma] = avg_psnr
-                    test_results["denoised images"] = my_table
-                wandb.log(test_results)
+                    test_results["denoised images"] =my_table
+
+                wandb.log(test_results, step = current_step)
 
     logger.info('Saving the final model.')
     model.save('latest')
