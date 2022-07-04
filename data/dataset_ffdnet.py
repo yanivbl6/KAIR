@@ -41,7 +41,7 @@ class DatasetFFDNet(data.Dataset):
 
         self.new_norm = opt['new_norm'] if opt['new_norm'] else 37.82235769987106
         self.baseline = opt['baseline'] if opt['baseline'] else True
-
+        self.real_norm  = opt['real_norm'] if  opt['real_norm'] else False
 
     def set_test_sigma(self, sigma):
         self.sigma_test = sigma
@@ -129,9 +129,13 @@ class DatasetFFDNet(data.Dataset):
             
             if not self.baseline:
                 d = self.patch_size**2 * self.n_channels
-                norm_frac = (torch.sqrt(ynorm**2 - d * (noise_level**2))/self.new_norm)
-                ##norm_frac = self.new_norm / torch.sqrt(calc_norm(img_L, gray_scale)**2 - d * (noise_level**2))
 
+                if self.real_norm:
+                    norm_frac = (xnorm/self.new_norm)
+                else:
+                    norm_frac = (torch.sqrt(ynorm**2 - d * (noise_level**2))/self.new_norm)
+                ##norm_frac = self.new_norm / torch.sqrt(calc_norm(img_L, gray_scale)**2 - d * (noise_level**2))
+                
                 img_L.mul_(norm_frac/(noise_level**2))
 
             # ---------------------------------

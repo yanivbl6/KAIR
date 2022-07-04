@@ -45,7 +45,7 @@
       , "sigma_test": 30 //IMPORTANT
       , "baseline": false   //IMPORTANT
       , "new_norm": 37.82235769987106    //IMPORTANT
-
+      , "real_norm": true
     }
   }
 

@@ -151,6 +151,7 @@ def main(json_path='options/train_dncnn.json'):
     model = define_Model(opt)
 
 
+    opt["Version"] = 0.2
     wandb.init(project="dncnn", entity="dl-projects" )
     wandb.config.update(opt)
     wandb.Table.MAX_ROWS = len(test_loader) * len(opt['tsigma'])
