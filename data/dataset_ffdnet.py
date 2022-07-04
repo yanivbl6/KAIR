@@ -39,7 +39,7 @@ class DatasetFFDNet(data.Dataset):
         # -------------------------------------
         self.paths_H = util.get_image_paths(opt['dataroot_H'])
 
-        self.new_norm = opt['new_norm'] if opt['new_norm'] else 45.167343
+        self.new_norm = opt['new_norm'] if opt['new_norm'] else 37.82235769987106
         self.baseline = opt['baseline'] if opt['baseline'] else True
 
 
@@ -100,7 +100,7 @@ class DatasetFFDNet(data.Dataset):
             ynorm =  torch.norm(img_L)
             xnorm = torch.norm(img_H)
             if not self.baseline:
-                img_L.mul_(1.0/(sigma/255.0)**2)
+                img_L.mul_(1.0/((noise_level)**2))
 
         else:
             """
