@@ -28,6 +28,7 @@
       , "baseline": false     //IMPORTANT
       , "new_norm": 1.0   //IMPORTANT
       , "constant_norm": false
+      , "real_norm": true
 
       , "dataloader_shuffle": true
       , "dataloader_num_workers": 8
@@ -47,6 +48,8 @@
       , "baseline": false   //IMPORTANT
       , "new_norm": 1.0    //IMPORTANT
       , "constant_norm": false
+      , "real_norm": true
+
     }
   }
 
@@ -68,6 +71,8 @@
     , "init_gain": 0.2
     , "normact": 1.0   //IMPORTANT
     , "constant_norm": false
+    , "use_real_norm": true
+
   }
 
   , "train": {
