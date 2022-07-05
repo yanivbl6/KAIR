@@ -62,7 +62,7 @@ class NormAct(nn.Module):
 # DnCNN
 # --------------------------------------------
 class DnCNN(nn.Module):
-    def __init__(self, in_nc=1, out_nc=1, nc=64, nb=17, act_mode='BR', normact = None, use_real_norm = False):
+    def __init__(self, in_nc=1, out_nc=1, nc=64, nb=17, act_mode='BR', normact = None, use_real_norm = False, constant_norm = True):
         """
         # ------------------------------------
         in_nc: channel number of input
@@ -95,6 +95,8 @@ class DnCNN(nn.Module):
         self.in_nc = in_nc
         self.use_real_norm = use_real_norm
 
+        self.constant_norm = constant_norm
+
     def feed_sigma(self, sigma):
         self.sigma = sigma
 
@@ -106,20 +108,28 @@ class DnCNN(nn.Module):
 
     def forward(self, x):
         n = self.model(x)
-        if self.training:
-            return self.normact(x-n,  self.new_norm)
-        else:
-            if self.new_norm is None:
+        if self.constant_norm:
+            if self.training:
                 return self.normact(x-n,  self.new_norm)
             else:
-                gray_scale = self.in_nc == 1
-                d = x.shape[2] * x.shape[3] * self.in_nc
-                if self.use_real_norm:
-                    norm_frac = (self.xnorm/self.new_norm).to(device = x.device)
+                if self.new_norm is None:
+                    return self.normact(x-n,  self.new_norm)
                 else:
-                    norm_frac = (torch.sqrt(self.ynorm**2 - d * ((self.sigma/255.0)**2))/self.new_norm).to(device = x.device)
-                return norm_frac*self.normact(x-n,  self.new_norm)
-
+                    gray_scale = self.in_nc == 1
+                    d = x.shape[2] * x.shape[3] * self.in_nc
+                    if self.use_real_norm:
+                        norm_frac = (self.xnorm/self.new_norm).to(device = x.device)
+                    else:
+                        norm_frac = (torch.sqrt(self.ynorm**2 - d * ((self.sigma/255.0)**2))/self.new_norm).to(device = x.device)
+                    return norm_frac*self.normact(x-n,  self.new_norm)
+        else:
+            gray_scale = self.in_nc == 1
+            d = x.shape[2] * x.shape[3] * self.in_nc
+            if self.use_real_norm:
+                norm_frac = (self.xnorm).to(device = x.device)
+            else:
+                norm_frac = (torch.sqrt(self.ynorm**2 - d * ((self.sigma/255.0)**2))).to(device = x.device)
+            return norm_frac*self.normact(x-n,  1.0)
 # --------------------------------------------
 # IRCNN denoiser
 # --------------------------------------------

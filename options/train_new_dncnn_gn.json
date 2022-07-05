@@ -66,7 +66,8 @@
     , "init_type": "orthogonal"         // "orthogonal" | "normal" | "uniform" | "xavier_normal" | "xavier_uniform" | "kaiming_normal" | "kaiming_uniform"
     , "init_bn_type": "uniform"         // "uniform" | "constant"
     , "init_gain": 0.2
-    , "normact": 37.82235769987106   //IMPORTANT
+    , "normact": 1.0   //IMPORTANT
+    , "constant_norm": false
   }
 
   , "train": {

@@ -139,6 +139,10 @@ class DatasetFFDNet(data.Dataset):
             xnorm = np.sqrt(np.sum(img_H**2))
             noise_level = torch.FloatTensor([self.sigma_test/255.0])
             
+            if self.constant_norm:
+                assert(self.new_norm == 1.0)
+
+
             if not self.baseline:
                 d = self.patch_size**2 * self.n_channels
 
