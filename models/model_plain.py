@@ -116,7 +116,7 @@ class ModelPlain(ModelBase):
             self.G_optimizer = Adam(G_optim_params, lr=self.opt_train['G_optimizer_lr'],
                                     betas=self.opt_train['G_optimizer_betas'],
                                     weight_decay=self.opt_train['G_optimizer_wd'])
-    elif self.opt_train['G_optimizer_type'] == 'sgd':
+        elif self.opt_train['G_optimizer_type'] == 'sgd':
             self.G_optimizer = SGD(G_optim_params, lr=self.opt_train['G_optimizer_lr'],
                                     momentum=self.opt_train['G_optimizer_momentum'] if self.opt_train['G_optimizer_momentum'] else 0.0,
                                     nesterov=self.opt_train['G_optimizer_nesterov'] if self.opt_train['G_optimizer_nesterov'] else False,
