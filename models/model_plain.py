@@ -2,7 +2,7 @@ from collections import OrderedDict
 import torch
 import torch.nn as nn
 from torch.optim import lr_scheduler
-from torch.optim import Adam
+from torch.optim import Adam, SGD
 
 from models.select_network import define_G
 from models.model_base import ModelBase
@@ -115,6 +115,11 @@ class ModelPlain(ModelBase):
         if self.opt_train['G_optimizer_type'] == 'adam':
             self.G_optimizer = Adam(G_optim_params, lr=self.opt_train['G_optimizer_lr'],
                                     betas=self.opt_train['G_optimizer_betas'],
+                                    weight_decay=self.opt_train['G_optimizer_wd'])
+    elif self.opt_train['G_optimizer_type'] == 'sgd':
+            self.G_optimizer = SGD(G_optim_params, lr=self.opt_train['G_optimizer_lr'],
+                                    momentum=self.opt_train['G_optimizer_momentum'] if self.opt_train['G_optimizer_momentum'] else 0.0,
+                                    nesterov=self.opt_train['G_optimizer_nesterov'] if self.opt_train['G_optimizer_nesterov'] else False,
                                     weight_decay=self.opt_train['G_optimizer_wd'])
         else:
             raise NotImplementedError

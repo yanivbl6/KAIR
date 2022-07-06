@@ -7,7 +7,7 @@
   , "n_channels": 1  // broadcast to "datasets", 1 for grayscale, 3 for color
 
   , "merge_bn": true               // BN for DnCNN
-  , "merge_bn_startpoint": 40000  // merge BN after N iterations
+  , "merge_bn_startpoint": 80000  // merge BN after N iterations
   , "tsigma": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
 
   , "path": {
@@ -75,12 +75,14 @@
     , "G_lossfn_weight": 1.0            // default
 
     , "G_optimizer_type": "sgd"        // fixed, adam is enough
-    , "G_optimizer_lr": 5e-2            // learning rate
+    , "G_optimizer_lr": 1e-1            // learning rate
     , "G_optimizer_clipgrad": null      // unused
+    , "G_optimizer_nesterov": false
+    , "G_optimizer_momentum": 0.0
 
-    , "G_scheduler_type": "MultiStepLR" // "MultiStepLR" is enough
-    , "G_scheduler_milestones": [20000, 40000, 60000, 80000, 100000, 200000]
-    , "G_scheduler_gamma": 0.3
+    , "G_scheduler_type": "CosineAnnealingWarmRestarts" // "MultiStepLR" is enough
+    , "G_scheduler_periods": 150000
+    , "G_scheduler_eta_min": 1e-7
 
     , "G_regularizer_orthstep": null    // unused
     , "G_regularizer_clipstep": null    // unused

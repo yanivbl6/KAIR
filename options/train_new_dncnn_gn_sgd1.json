@@ -74,13 +74,15 @@
     "G_lossfn_type": "l2"               // "l1" preferred | "l2sum" | "l2" | "ssim" 
     , "G_lossfn_weight": 1.0            // default
 
-    , "G_optimizer_type": "adam"        // fixed, adam is enough
-    , "G_optimizer_lr": 1e-4            // learning rate
+    , "G_optimizer_type": "sgd"        // fixed, adam is enough
+    , "G_optimizer_lr": 1e-1            // learning rate
     , "G_optimizer_clipgrad": null      // unused
+    , "G_optimizer_nesterov": true
+    , "G_optimizer_momentum": 0.8
 
     , "G_scheduler_type": "MultiStepLR" // "MultiStepLR" is enough
     , "G_scheduler_milestones": [20000, 40000, 60000, 80000, 100000, 200000]
-    , "G_scheduler_gamma": 0.5
+    , "G_scheduler_gamma": 0.3
 
     , "G_regularizer_orthstep": null    // unused
     , "G_regularizer_clipstep": null    // unused
