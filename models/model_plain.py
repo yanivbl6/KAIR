@@ -139,6 +139,8 @@ class ModelPlain(ModelBase):
                                                             self.opt_train['G_scheduler_restart_weights'],
                                                             self.opt_train['G_scheduler_eta_min']
                                                             ))
+        elif self.opt_train['G_scheduler_type'] == 'Exponential':
+            self.schedulers.append(lr_scheduler.ExponentialLR(self.G_optimizer, self.opt_train['G_scheduler_gamma']))
         else:
             raise NotImplementedError
 

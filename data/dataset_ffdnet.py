@@ -44,6 +44,9 @@ class DatasetFFDNet(data.Dataset):
         self.real_norm  = opt['real_norm'] if  opt['real_norm'] else False
         self.constant_norm  = opt['constant_norm'] if  opt['constant_norm'] else True
 
+
+        self.gaps  = opt['gaps'] if  opt['gaps'] else -1.0
+
     def set_test_sigma(self, sigma):
         self.sigma_test = sigma
 
@@ -91,7 +94,12 @@ class DatasetFFDNet(data.Dataset):
             # get noise level
             # ---------------------------------
             # noise_level = torch.FloatTensor([np.random.randint(self.sigma_min, self.sigma_max)])/255.0
-            noise_level = torch.FloatTensor([np.random.uniform(self.sigma_min, self.sigma_max)])/255.0
+
+            if self.gaps > 0:
+                rnd = np.random.uniform(0 , (1 + self.sigma_max - self.sigma_min)//self.gaps)
+                noise_level = torch.FloatTensor([rnd*self.gaps +  self.sigma_min])/255.0
+            else:
+                noise_level = torch.FloatTensor([np.random.randint(self.sigma_min, self.sigma_max)])/255.0
 
             # ---------------------------------
             # add noise
