@@ -25,6 +25,7 @@
                 
       , "sigma": [10, 100]   //IMPORTANT
       , "gaps": 30
+      
       , "sigma_test": 30 //IMPORTANT
       , "baseline": false     //IMPORTANT
       , "new_norm": 1.0   //IMPORTANT

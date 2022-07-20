@@ -24,7 +24,7 @@
       , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
 
       , "sigma": [10, 100]   //IMPORTANT
-      , "gaps": 10
+      , "gaps": 30
 
       , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
       , "baseline": true   //IMPORTANT
