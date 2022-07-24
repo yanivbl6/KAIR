@@ -180,7 +180,6 @@ class ModelPlain(ModelBase):
         self.G_optimizer.zero_grad()
         self.netG_forward()
 
-        breakpoint()
         loss = self.G_lossfn(self.E, self.H)
         G_loss = self.G_lossfn_weight * loss
 
