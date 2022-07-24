@@ -194,6 +194,11 @@ def main(json_path='options/train_dncnn.json'):
             # -------------------------------
             # 3) optimize parameters
             # -------------------------------
+
+            if opt['train']['G_lossfn_type'] in ['WL2']:
+                loss_weights = train_data['C']
+                model.set_loss_weights(loss_weights)
+
             model.optimize_parameters(current_step)
 
             # -------------------------------

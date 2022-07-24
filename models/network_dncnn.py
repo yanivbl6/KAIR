@@ -33,10 +33,10 @@ import models.basicblock as B
 # --------------------------------------------
 """
 
-def norm_act(output_net, new_norm):
+def norm_act(output_net, new_norm, epsilon = 1e-5):
     output_net_shape = output_net.shape
     output_net = output_net.view(output_net.size(0), -1)
-    frac = new_norm / (torch.norm(output_net, dim=1))
+    frac = new_norm / (torch.norm(output_net, dim=1) + epsilon)
     output_net = output_net * (1 - torch.nn.functional.relu(1 - frac)).unsqueeze(1)
     return output_net.view(output_net_shape)
 

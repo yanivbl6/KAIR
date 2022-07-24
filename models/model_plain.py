@@ -96,8 +96,12 @@ class ModelPlain(ModelBase):
             self.G_lossfn = nn.MSELoss(reduction='sum').to(self.device)
         elif G_lossfn_type == 'ssim':
             self.G_lossfn = SSIMLoss().to(self.device)
+        elif G_lossfn_type == 'WL2':
+            self.G_lossfn = nn.MSELoss(reduction='none').to(self.device)
+
         elif G_lossfn_type == 'charbonnier':
             self.G_lossfn = CharbonnierLoss(self.opt_train['G_charbonnier_eps']).to(self.device)
+            
         else:
             raise NotImplementedError('Loss type [{:s}] is not found.'.format(G_lossfn_type))
         self.G_lossfn_weight = self.opt_train['G_lossfn_weight']
@@ -168,10 +172,20 @@ class ModelPlain(ModelBase):
     # ----------------------------------------
     # update parameters and get loss
     # ----------------------------------------
+
+    def set_loss_weights(self, W):
+        self.G_lossfn_weight = (W.to(self.device))**2
+
     def optimize_parameters(self, current_step):
         self.G_optimizer.zero_grad()
         self.netG_forward()
-        G_loss = self.G_lossfn_weight * self.G_lossfn(self.E, self.H)
+
+        breakpoint()
+        loss = self.G_lossfn(self.E, self.H)
+        G_loss = self.G_lossfn_weight * loss
+
+        if len(loss.shape) > 0:
+            G_loss = G_loss.mean()
         G_loss.backward()
 
         # ------------------------------------
