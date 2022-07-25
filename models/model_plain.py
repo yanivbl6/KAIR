@@ -12,7 +12,7 @@ from models.loss_ssim import SSIMLoss
 from utils.utils_model import test_mode
 from utils.utils_regularizers import regularizer_orth, regularizer_clip
 
-
+from ignite.handlers.param_scheduler import create_lr_scheduler_with_warmup
 
 class ModelPlain(ModelBase):
     """Train with pixel loss"""
@@ -133,20 +133,25 @@ class ModelPlain(ModelBase):
     # ----------------------------------------
     def define_scheduler(self):
         if self.opt_train['G_scheduler_type'] == 'MultiStepLR':
-            self.schedulers.append(lr_scheduler.MultiStepLR(self.G_optimizer,
+            scheduler = lr_scheduler.MultiStepLR(self.G_optimizer,
                                                             self.opt_train['G_scheduler_milestones'],
                                                             self.opt_train['G_scheduler_gamma']
-                                                            ))
+                                                            )
         elif self.opt_train['G_scheduler_type'] == 'CosineAnnealingWarmRestarts':
-            self.schedulers.append(lr_scheduler.CosineAnnealingWarmRestarts(self.G_optimizer,
+            scheduler = lr_scheduler.CosineAnnealingWarmRestarts(self.G_optimizer,
                                                             self.opt_train['G_scheduler_periods'],
                                                             self.opt_train['G_scheduler_restart_weights'],
                                                             self.opt_train['G_scheduler_eta_min']
-                                                            ))
+                                                            )
         elif self.opt_train['G_scheduler_type'] == 'Exponential':
-            self.schedulers.append(lr_scheduler.ExponentialLR(self.G_optimizer, self.opt_train['G_scheduler_gamma']))
+            scheduler = lr_scheduler.ExponentialLR(self.G_optimizer, self.opt_train['G_scheduler_gamma'])
         else:
             raise NotImplementedError
+
+        if self.opt_train['warmup_duration']:
+            scheduler = create_lr_scheduler_with_warmup(scheduler , 0.0, self.opt_train['warmup_duration']  )
+
+        self.schedulers.append(scheduler)
 
     """
     # ----------------------------------------
