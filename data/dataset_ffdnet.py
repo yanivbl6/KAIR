@@ -8,6 +8,10 @@ def norm_change(img, new_norm):
     frac = new_norm / (torch.norm(img))
     return img*frac
 
+def np_norm_change(img, new_norm):
+    frac = new_norm / (np.sqrt(np.sum(img**2)))
+    return img*frac
+
 def calc_norm(data, gray_scale=False):
     if gray_scale:
         data_norm = data.norm(dim=(2, 3)).squeeze(1)
@@ -43,6 +47,8 @@ class DatasetFFDNet(data.Dataset):
         self.baseline = opt['baseline'] if opt['baseline'] else True
         self.real_norm  = opt['real_norm'] if  opt['real_norm'] else False
         self.constant_norm  = opt['constant_norm'] if  opt['constant_norm'] else True
+        self.constant_norm_target  = opt['constant_norm_target'] if  opt['constant_norm_target'] else False
+
 
 
         self.gaps  = opt['gaps'] if  opt['gaps'] else -1.0
@@ -85,10 +91,16 @@ class DatasetFFDNet(data.Dataset):
             # HWC to CHW, numpy(uint) to tensor
             # ---------------------------------
             img_H = util.uint2tensor3(patch_H)
+
+            if self.constant_norm_target:
+                img_H = norm_change(img_H, self.new_norm)
+
             img_L = img_H.clone()
 
-            if not self.baseline and self.constant_norm:
+            if self.constant_norm and not self.constant_norm_target:
                 img_L = norm_change(img_L, self.new_norm)
+
+
 
             # ---------------------------------
             # get noise level
@@ -121,7 +133,7 @@ class DatasetFFDNet(data.Dataset):
                         norm_frac = (torch.sqrt(ynorm**2 - d * (noise_level**2)))
                     ##norm_frac = self.new_norm / torch.sqrt(calc_norm(img_L, gray_scale)**2 - d * (noise_level**2))
                     img_L.mul_(norm_frac/(noise_level**2))
-
+                
         else:
             """
             # --------------------------------
@@ -131,6 +143,7 @@ class DatasetFFDNet(data.Dataset):
 
             H, W, _ = img_H.shape
 
+
             # --------------------------------
             # randomly crop the patch
             # --------------------------------
@@ -138,8 +151,18 @@ class DatasetFFDNet(data.Dataset):
             rnd_w = (W - self.patch_size)//2
             patch_H = img_H[rnd_h:rnd_h + self.patch_size, rnd_w:rnd_w + self.patch_size, :]
 
+            ##img_H = util.uint2tensor3(patch_H)
+
+            
+
+
             img_H = util.uint2single(patch_H)
+
+            if self.constant_norm:
+                img_H = np_norm_change(img_H, self.new_norm)
+            
             img_L = np.copy(img_H)
+
             np.random.seed(seed=0)
             img_L += np.random.normal(0, self.sigma_test/255.0, img_L.shape)
 
@@ -147,20 +170,20 @@ class DatasetFFDNet(data.Dataset):
             xnorm = np.sqrt(np.sum(img_H**2))
             noise_level = torch.FloatTensor([self.sigma_test/255.0])
             
-            if self.constant_norm and not self.baseline:
-                assert(self.new_norm == 1.0)
-
 
             if not self.baseline:
-                d = self.patch_size**2 * self.n_channels
 
-                if self.real_norm:
-                    norm_frac = (xnorm/self.new_norm)
+                if self.constant_norm:
+                    img_L.mul_(1/(noise_level**2))
                 else:
-                    norm_frac = (torch.sqrt(ynorm**2 - d * (noise_level**2))/self.new_norm)
-                ##norm_frac = self.new_norm / torch.sqrt(calc_norm(img_L, gray_scale)**2 - d * (noise_level**2))
-                
-                img_L.mul_(norm_frac/(noise_level**2))
+                    d = self.patch_size**2 * self.n_channels
+
+                    if self.real_norm:
+                        norm_frac = (xnorm/self.new_norm)
+                    else:
+                        norm_frac = (torch.sqrt(ynorm**2 - d * (noise_level**2))/self.new_norm)
+
+                    img_L.mul_(norm_frac/(noise_level**2))
 
             # ---------------------------------
             # L/H image pairs

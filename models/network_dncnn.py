@@ -62,7 +62,7 @@ class NormAct(nn.Module):
 # DnCNN
 # --------------------------------------------
 class DnCNN(nn.Module):
-    def __init__(self, in_nc=1, out_nc=1, nc=64, nb=17, act_mode='BR', normact = None, use_real_norm = False, constant_norm = True):
+    def __init__(self, in_nc=1, out_nc=1, nc=64, nb=17, act_mode='BR', normact = None, use_real_norm = False, constant_norm = True, constant_norm_test = False):
         """
         # ------------------------------------
         in_nc: channel number of input
@@ -96,7 +96,7 @@ class DnCNN(nn.Module):
         self.use_real_norm = use_real_norm
 
         self.constant_norm = constant_norm
-
+        self.constant_norm_test = constant_norm_test
     def feed_sigma(self, sigma):
         self.sigma = sigma
 
@@ -112,7 +112,7 @@ class DnCNN(nn.Module):
             if self.training:
                 return self.normact(x-n,  self.new_norm)
             else:
-                if self.new_norm is None:
+                if (self.new_norm is None) or (self.constant_norm_test):
                     return self.normact(x-n,  self.new_norm)
                 else:
                     gray_scale = self.in_nc == 1

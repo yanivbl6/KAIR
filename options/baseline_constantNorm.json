@@ -27,6 +27,8 @@
       , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
       , "baseline": true   //IMPORTANT
       , "new_norm": 37.82235769987106   //IMPORTANT
+      , "constant_norm": true
+      , "constant_norm_target": true
 
       , "dataloader_shuffle": true
       , "dataloader_num_workers": 8
@@ -44,6 +46,8 @@
       , "sigma_test": 30 //IMPORTANT
       , "baseline": true  //IMPORTANT
       , "new_norm": 37.82235769987106 //IMPORTANT
+      , "constant_norm": true
+
     }
   }
 
