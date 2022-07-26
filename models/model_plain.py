@@ -12,7 +12,7 @@ from models.loss_ssim import SSIMLoss
 from utils.utils_model import test_mode
 from utils.utils_regularizers import regularizer_orth, regularizer_clip
 
-from ignite.handlers.param_scheduler import create_lr_scheduler_with_warmup
+#from ignite.handlers.param_scheduler import create_lr_scheduler_with_warmup
 
 class ModelPlain(ModelBase):
     """Train with pixel loss"""
@@ -148,8 +148,8 @@ class ModelPlain(ModelBase):
         else:
             raise NotImplementedError
 
-        if self.opt_train['warmup_duration']:
-            scheduler = create_lr_scheduler_with_warmup(scheduler , 0.0, self.opt_train['warmup_duration']  )
+#        if self.opt_train['warmup_duration']:
+#            scheduler = create_lr_scheduler_with_warmup(scheduler , 0.0, self.opt_train['warmup_duration']  )
 
         self.schedulers.append(scheduler)
 
