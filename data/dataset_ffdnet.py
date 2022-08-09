@@ -4,6 +4,8 @@ import torch
 import torch.utils.data as data
 import utils.utils_image as util
 
+import cv2
+
 def norm_change(img, new_norm):
     frac = new_norm / (torch.norm(img))
     return img*frac
@@ -77,14 +79,25 @@ class DatasetFFDNet(data.Dataset):
             # ---------------------------------
             # randomly crop the patch
             # ---------------------------------
-            rnd_h = random.randint(0, max(0, H - self.patch_size))
-            rnd_w = random.randint(0, max(0, W - self.patch_size))
-            patch_H = img_H[rnd_h:rnd_h + self.patch_size, rnd_w:rnd_w + self.patch_size, :]
 
-            # ---------------------------------
+
+            if self.patch_size > 0:
+                rnd_h = random.randint(0, max(0, H - self.patch_size))
+                rnd_w = random.randint(0, max(0, W - self.patch_size))
+                patch_H = img_H[rnd_h:rnd_h + self.patch_size, rnd_w:rnd_w + self.patch_size, :]
+ 
+                mode = random.randint(0, 7)
+                
+            else:
+                rnd_h = 0
+                rnd_w = 0
+                patch_H = img_H
+                mode = random.randint(0, 1)*2
+
+
+# ---------------------------------
             # augmentation - flip, rotate
             # ---------------------------------
-            mode = random.randint(0, 7)
             patch_H = util.augment_img(patch_H, mode=mode)
 
             # ---------------------------------
@@ -147,9 +160,17 @@ class DatasetFFDNet(data.Dataset):
             # --------------------------------
             # randomly crop the patch
             # --------------------------------
-            rnd_h = (H - self.patch_size)//2
-            rnd_w = (W - self.patch_size)//2
-            patch_H = img_H[rnd_h:rnd_h + self.patch_size, rnd_w:rnd_w + self.patch_size, :]
+
+            if self.patch_size > 0:
+
+                rnd_h = (H - self.patch_size)//2
+                rnd_w = (W - self.patch_size)//2
+                patch_H = img_H[rnd_h:rnd_h + self.patch_size, rnd_w:rnd_w + self.patch_size, :]
+            else:
+                rnd_h = 0
+                rnd_w = 0
+                patch_H = img_H
+
 
             ##img_H = util.uint2tensor3(patch_H)
 

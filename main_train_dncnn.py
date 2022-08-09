@@ -18,7 +18,7 @@ from utils import utils_option as option
 from data.select_dataset import define_Dataset
 from models.select_model import define_Model
 
-
+from tqdm import tqdm
 
 
 def norm_change(img, new_norm):
@@ -171,7 +171,6 @@ def main(json_path='options/train_dncnn.json'):
     '''
 
     ##table_art = wandb.Artifact("table_artifact_" + str(wandb.run.id), type="predictions")
-
 
 
     for epoch in range(1000000):  # keep running

@@ -1,5 +1,5 @@
 {
-  "task": "dncnn25_new"  //  root/task/images-models-options
+  "task": "dncnn25"  //  root/task/images-models-options
   , "model": "plain" // "plain"
   , "gpu_ids": [0]
 
@@ -19,20 +19,20 @@
     "train": {
       "name": "train_dataset"           // just name
       , "dataset_type": "denoising-noiselevel"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
-      , "dataroot_H": "/data/celebA"// path of H training dataset
+      , "dataroot_H": "/data/celebA"  // path of H training dataset
       , "dataroot_L": null              // path of L training dataset
-      , "H_size": -1                    // patch size 40 | 64 | 96 | 128 | 192
-                
-      , "sigma": [10, 50]   //IMPORTANT
-      , "sigma_test": 30 //IMPORTANT
-      , "baseline": false     //IMPORTANT
+      , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
+
+      , "sigma": [10, 50]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
+      , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
+      , "baseline": true   //IMPORTANT
       , "new_norm": 100   //IMPORTANT
       , "constant_norm": true
       , "constant_norm_target": true
 
       , "dataloader_shuffle": true
       , "dataloader_num_workers": 8
-      , "dataloader_batch_size": 16     // batch size 1 | 16 | 32 | 48 | 64 | 128
+      , "dataloader_batch_size": 64     // batch size 1 | 16 | 32 | 48 | 64 | 128
     }
     , "test": {
       "name": "test_dataset"            // just name
@@ -40,13 +40,12 @@
       , "dataroot_H": "/data/celebB"  // path of H testing dataset
       , "dataroot_L": null              // path of L testing dataset
 
-      , "H_size": -1                    // patch size 40 | 64 | 96 | 128 | 192
-
+      , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
 
       , "sigma": [10, 50]      //IMPORTANT
       , "sigma_test": 30 //IMPORTANT
-      , "baseline": false   //IMPORTANT
-      , "new_norm": 100    //IMPORTANT
+      , "baseline": true  //IMPORTANT
+      , "new_norm": 100 //IMPORTANT
       , "constant_norm": true
 
     }
@@ -68,10 +67,8 @@
     , "init_type": "orthogonal"         // "orthogonal" | "normal" | "uniform" | "xavier_normal" | "xavier_uniform" | "kaiming_normal" | "kaiming_uniform"
     , "init_bn_type": "uniform"         // "uniform" | "constant"
     , "init_gain": 0.2
-    , "normact": 100   //IMPORTANT
-    , "constant_norm": true
-    , "constant_norm_test": true
-
+    , "normact": null
+    , "constant_norm" : true
   }
 
   , "train": {
