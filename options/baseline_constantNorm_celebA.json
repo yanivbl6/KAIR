@@ -21,7 +21,7 @@
       , "dataset_type": "denoising-noiselevel"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
       , "dataroot_H": "/data/celebA"  // path of H training dataset
       , "dataroot_L": null              // path of L training dataset
-      , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
+      , "H_size": -1                    // patch size 40 | 64 | 96 | 128 | 192
 
       , "sigma": [10, 50]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
       , "sigma_test": 30 // 15, 25, 50 for DnCNN and ffdnet
@@ -40,7 +40,7 @@
       , "dataroot_H": "/data/celebB"  // path of H testing dataset
       , "dataroot_L": null              // path of L testing dataset
 
-      , "H_size": 80                    // patch size 40 | 64 | 96 | 128 | 192
+      , "H_size": -1                    // patch size 40 | 64 | 96 | 128 | 192
 
       , "sigma": [10, 50]      //IMPORTANT
       , "sigma_test": 30 //IMPORTANT
