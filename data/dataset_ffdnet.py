@@ -5,6 +5,8 @@ import torch.utils.data as data
 import utils.utils_image as util
 
 import cv2
+from tqdm import tqdm
+
 
 def norm_change(img, new_norm):
     frac = new_norm / (torch.norm(img))
@@ -51,9 +53,22 @@ class DatasetFFDNet(data.Dataset):
         self.constant_norm  = opt['constant_norm'] if  opt['constant_norm'] else True
         self.constant_norm_target  = opt['constant_norm_target'] if  opt['constant_norm_target'] else False
 
+        self.sub_avg_img  = opt['subtract_average_image'] if  opt['subtract_average_image'] else False
 
 
         self.gaps  = opt['gaps'] if  opt['gaps'] else -1.0
+
+
+        avg_img = 0
+        # if self.sub_avg_img:
+        #     self.avg_img = 0
+        #     N = len(self)
+        #     for i in tqdm(range(N)):
+        #         avg_img = avg_img + self[i]['H']/N
+        
+        self.avg_img = avg_img
+
+
 
     def set_test_sigma(self, sigma):
         self.sigma_test = sigma
@@ -108,6 +123,9 @@ class DatasetFFDNet(data.Dataset):
             if self.constant_norm_target:
                 img_H = norm_change(img_H, self.new_norm)
 
+            breakpoint()
+
+            img_H = img_H - self.avg_img
             img_L = img_H.clone()
 
             if self.constant_norm and not self.constant_norm_target:
@@ -182,6 +200,7 @@ class DatasetFFDNet(data.Dataset):
             if self.constant_norm:
                 img_H = np_norm_change(img_H, self.new_norm)
             
+            img_H = img_H - self.avg_img
             img_L = np.copy(img_H)
 
             np.random.seed(seed=0)
