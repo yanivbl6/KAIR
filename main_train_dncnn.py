@@ -239,13 +239,14 @@ def main(json_path='options/train_dncnn.json'):
 
 
                 test_results = {}
-                my_table = wandb.Table(columns=["noise", "img_idx" , "image" ,"psnr"])
+                my_table = wandb.Table(columns=["noise", "img_idx" , "image" ,"psnr","L2"])
 
                 for sigma_i,tsigma in enumerate(opt['tsigma']):
                 
                     test_loader.dataset.set_test_sigma(tsigma)
                     avg_psnr = 0.0
                     idx = 0
+                    tot_sqr = 0.0
 
                     for test_data in test_loader:
                         idx += 1
@@ -266,6 +267,7 @@ def main(json_path='options/train_dncnn.json'):
                         E_img = util.tensor2uint(visuals['E'])
                         H_img = util.tensor2uint(visuals['H'])
 
+
                         # -----------------------
                         # save estimated image E
                         # -----------------------
@@ -276,19 +278,23 @@ def main(json_path='options/train_dncnn.json'):
                         # -----------------------
                         # calculate PSNR
                         # -----------------------
+
+
+                        tot_sqr = tot_sqr + (E_img**2).mean()
                         current_psnr = util.calculate_psnr(E_img, H_img, border=border)
 
-                        my_table.add_data(tsigma,idx, wandb.Image(E_img, caption=img_name), current_psnr)
+                        my_table.add_data(tsigma,idx, wandb.Image(E_img, caption=img_name), current_psnr, (E_img**2).mean())
 
                         ##logger.info('{:->4d}--> {:>10s} | {:<4.2f}dB'.format(idx, image_name_ext, current_psnr))
 
                         avg_psnr += current_psnr
                     avg_psnr = avg_psnr / idx
-
+                    tot_sqr = tot_sqr / idx
                     # testing log
                     logger.info('<epoch:{:3d}, iter:{:8,d}, sigma:{:3d}, Average PSNR : {:<.2f}dB\n'.format(epoch, current_step , tsigma , avg_psnr))
                     test_results['psnr_%.02f' % tsigma] = avg_psnr
                     test_results["denoised images"] =my_table
+                    test_results['Output_Norm_%d' % tsigma] = tot_sqr
 
                 wandb.log(test_results, step = current_step)
 

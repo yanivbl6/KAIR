@@ -60,14 +60,16 @@ class DatasetFFDNet(data.Dataset):
 
 
         avg_img = 0
-        # if self.sub_avg_img:
-        #     self.avg_img = 0
-        #     N = len(self)
-        #     for i in tqdm(range(N)):
-        #         avg_img = avg_img + self[i]['H']/N
+        self.avg_img_np = 0
+        if self.sub_avg_img:
+            self.avg_img = 0
+            N = len(self)
+            for i in tqdm(range(N)):
+                avg_img = avg_img + self[i]['H']/N
         
+            self.avg_img_np = np.expand_dims(avg_img.numpy().squeeze(),2)
         self.avg_img = avg_img
-
+ 
 
 
     def set_test_sigma(self, sigma):
@@ -108,7 +110,7 @@ class DatasetFFDNet(data.Dataset):
                 rnd_w = 0
                 patch_H = img_H
                 mode = random.randint(0, 1)*2
-
+                mode = 0
 
 # ---------------------------------
             # augmentation - flip, rotate
@@ -123,7 +125,7 @@ class DatasetFFDNet(data.Dataset):
             if self.constant_norm_target:
                 img_H = norm_change(img_H, self.new_norm)
 
-            breakpoint()
+            ##breakpoint()
 
             img_H = img_H - self.avg_img
             img_L = img_H.clone()
@@ -200,7 +202,7 @@ class DatasetFFDNet(data.Dataset):
             if self.constant_norm:
                 img_H = np_norm_change(img_H, self.new_norm)
             
-            img_H = img_H - self.avg_img
+            img_H = img_H - self.avg_img_np
             img_L = np.copy(img_H)
 
             np.random.seed(seed=0)

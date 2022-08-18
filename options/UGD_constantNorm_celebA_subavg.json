@@ -8,7 +8,7 @@
 
   , "merge_bn": true               // BN for DnCNN
   , "merge_bn_startpoint": 4000  // merge BN after N iterations
-  , "tsigma": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
+  , "tsigma": [10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000]      // 15, 25, 50 for DnCNN | [0, 75] for FFDNet and FDnCNN
 
   , "path": {
     "root": "/results"            // "denoising" | "superresolution"
@@ -32,7 +32,7 @@
 
       , "dataloader_shuffle": true
       , "dataloader_num_workers": 8
-      , "dataloader_batch_size": 16     // batch size 1 | 16 | 32 | 48 | 64 | 128
+      , "dataloader_batch_size": 10     // batch size 1 | 16 | 32 | 48 | 64 | 128
       , "subtract_average_image": true
     }
     , "test": {
@@ -49,7 +49,7 @@
       , "baseline": false   //IMPORTANT
       , "new_norm": 100    //IMPORTANT
       , "constant_norm": true
-
+      , "subtract_average_image": true
     }
   }
 
@@ -69,7 +69,7 @@
     , "init_type": "orthogonal"         // "orthogonal" | "normal" | "uniform" | "xavier_normal" | "xavier_uniform" | "kaiming_normal" | "kaiming_uniform"
     , "init_bn_type": "uniform"         // "uniform" | "constant"
     , "init_gain": 0.2
-    , "normact": 100   //IMPORTANT
+    , "normact": null   //IMPORTANT
     , "constant_norm": true
     , "constant_norm_test": true
 
@@ -90,7 +90,7 @@
     , "G_regularizer_orthstep": null    // unused
     , "G_regularizer_clipstep": null    // unused
 
-    , "checkpoint_test": 1000           // for testing
+    , "checkpoint_test": 500          // for testing
     , "checkpoint_save": 1000000           // for saving model
     , "checkpoint_print": 10           // for print
   }
